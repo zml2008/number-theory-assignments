@@ -29,11 +29,11 @@ def _input_func(s):
 
 @gathering_input("Maximum s value: ")
 def generate_ppts(max_s):
-    pool = Pool(os.cpu_count() * 2 + 1)
-    values = sorted(itertools.chain(*pool.map(_input_func, list(range(1, max_s, 2)))))
-    print(len(values), "pythagorean triples: ")
-    for triple in values:
-        print("%d² + %d² = %d²" % triple)
+    with Pool(os.cpu_count() * 2 + 1) as pool:
+        values = sorted(itertools.chain(*pool.map(_input_func, list(range(1, max_s + 1, 2)))))
+        print(len(values), "pythagorean triples: ")
+        for triple in values:
+            print("%d² + %d² = %d²" % triple)
 
 
 if __name__ == "__main__":

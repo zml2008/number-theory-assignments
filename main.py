@@ -53,13 +53,12 @@ def ex7(num):
 
 
 def is_perfect(num):
-    return sum(factors(num)[0:-1]) == num
+    return sum(factors(num) - {num}) == num
 
 
 @gathering_input("Is number perfect: ")
 def ex8a(num):
-    perfect = sum(factors(num)[0:-1]) == num
-    print(perfect)
+    print(is_perfect(num))
 
 
 @gathering_input("Perfect numbers less than: ")
