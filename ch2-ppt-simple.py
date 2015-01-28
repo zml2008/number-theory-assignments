@@ -9,11 +9,13 @@ def b(s, t):
 def c(s, t):
     return ((s * s) + (t * t))/2
 
+
 def no_shared_factors(s, t):
     for i in range(2, min(s, t) + 1):
         if s % i == 0 and t % i == 0:
             return False
     return True
+
 
 def print_ppts():
     max_s = int(input("Maximum s value: "))
