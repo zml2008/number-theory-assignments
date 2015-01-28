@@ -1,5 +1,6 @@
 __author__ = 'zml'
 
+from functools import lru_cache
 
 class gathering_input(object):
     """
@@ -23,10 +24,6 @@ class gathering_input(object):
         return func
 
 
+@lru_cache(maxsize=128)
 def factors(num):
-    ret = set()
-    for i in range(1, num):
-        if num % i == 0:
-            ret.add(i)
-    ret.add(num)
-    return ret
+    return frozenset(filter(lambda i: num % i == 0, range(1, num + 1)))
