@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 def a(s, t):
     return s * t
 
@@ -24,7 +26,7 @@ def print_ppts():
         for t in range(1, s, 2):
             if no_shared_factors(s, t):
                 count += 1
-                print((s, t, a(s, t), b(s, t), c(s, t)))
+                print((s, t, a(s, t), b(s, t), c(s, t), (2 * c(s, t)) - (2 * a(s, t))))
     print("Total number of PPTs:", count)
 
 if __name__ == "__main__":

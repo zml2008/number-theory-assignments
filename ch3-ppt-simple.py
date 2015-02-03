@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 def a(u, v):
     return u * u - v * v
 
