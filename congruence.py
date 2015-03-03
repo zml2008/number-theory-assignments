@@ -7,18 +7,22 @@ import re
 CONGRUENCY_REGEX = re.compile(r'(\d+)x=(\d+)(?:mod|%)(\d+)')
 
 
+def gxy_neg(a, b):
+    g, x, y = gxy(a, b)
+    return g, x, -y
+
+
 def congruencies(a, c, m):
     """
     Congruency of the form a*x {congruent to} b mod c
     :return: yielding solutions to the congruency
     """
-    g, x, y = gxy(a, m)
+    g, x, y = gxy_neg(a, m)
     if c % g != 0: # If g does not divide c, then we don't get a fancy solution
-        return
+        return []
 
     x0 = (c * x) / g
-    for k in range(0, g):
-        yield x0 + (k * m/g)
+    return [x0 + (k * m/g) for k in range(0, g)]
 
 
 def main(args):
@@ -34,7 +38,9 @@ def main(args):
     c = int(match.group(2))
     m = int(match.group(3))
 
-    for res in congruencies(a, c, m):
+    cong = congruencies(a, c, m)
+    print("# of results:", len(cong))
+    for res in cong:
         print("x=%d mod %d" % (res % m, m))
 
     return 0
