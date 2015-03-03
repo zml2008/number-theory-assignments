@@ -4,7 +4,7 @@ __author__ = 'zml'
 from ch6_3 import gxy
 import re
 
-CONGRUENCY_REGEX = re.compile(r'(\d+)x=(\d+)(?:mod|%)(\d+)')
+CONGRUENCY_REGEX = re.compile(r'(\d+)\s*(?:\*\s*)?x\s*=\s*(\d+)\s*(?:mod|%)\s*(\d+)\s*$')
 
 
 def gxy_neg(a, b):
