@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 __author__ = 'zml'
 
 import math
@@ -10,7 +12,7 @@ def is_prime(num):
     return True
 
 
-def primes(start=1, primelimit=1000):
+def primes(start=1, primelimit=100):
     finals = 0
     last = start
     while finals < primelimit:
@@ -25,10 +27,9 @@ def primes(start=1, primelimit=1000):
 
 
 def prime_factorization(num):
-    primelimit = 100
     last_prime = 1
     while not is_prime(num):
-        for i in primes(last_prime, primelimit):
+        for i in primes(last_prime):
             if i == 1:
                 continue
             while num % i == 0:
