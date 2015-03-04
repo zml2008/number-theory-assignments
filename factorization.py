@@ -18,7 +18,7 @@ def primes(start=1, primelimit=100):
     while finals < primelimit:
         last += 1
         found = True
-        for i in range(2, math.ceil(math.sqrt(last))):
+        for i in range(2, int(math.ceil(math.sqrt(last)))):
             if last % i == 0 and last != i:
                 found = False
         if found:
