@@ -6,7 +6,7 @@ import math
 
 
 def is_prime(num):
-    for i in range(2, math.ceil(math.sqrt(num))):
+    for i in range(2, math.ceil(math.sqrt(num)) + 1):
         if num % i == 0 and num != i:
             return False
     return True
@@ -17,11 +17,7 @@ def primes(start=1, primelimit=100):
     last = start
     while finals < primelimit:
         last += 1
-        found = True
-        for i in range(2, int(math.ceil(math.sqrt(last)))):
-            if last % i == 0 and last != i:
-                found = False
-        if found:
+        if is_prime(last):
             yield last
             finals += 1
 
