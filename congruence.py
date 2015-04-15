@@ -4,7 +4,7 @@ __author__ = 'zml'
 from ch6_3 import gxy
 import re
 
-CONGRUENCY_REGEX = re.compile(r'(\d+)\s*(?:\*\s*)?x\s*=\s*(\d+)\s*(?:mod|%)\s*(\d+)\s*$')
+CONGRUENCY_REGEX = re.compile(r'(\d+)?\s*(?:\*\s*)?x\s*=\s*(\d+)\s*(?:mod|%)\s*(\d+)\s*$')
 
 
 def gxy_neg(a, b):
@@ -25,19 +25,26 @@ def congruencies(a, c, m):
     return [x0 + (k * m/g) for k in range(0, g)]
 
 
+def parse_congruency(congr):
+    match = CONGRUENCY_REGEX.match(congr)
+    if not match:
+        raise "Invalid result %s. Input must be of the form ax=cmodm" % congr
+    if match.group(1):
+        a = int(match.group(1))
+    else:
+        a = 1
+    c = int(match.group(2))
+    m = int(match.group(3))
+    return (a, c, m)
+
+
 def main(args):
     if len(args) < 1:
         print("No argument specified. First arg must be of form ax=cmodm")
         return 1
 
-    match = CONGRUENCY_REGEX.match(args[0])
-    if not match:
-        print("Invalid result %s. Input must be of the form ax=cmodm" % args[0])
-        return 1
-    a = int(match.group(1))
-    c = int(match.group(2))
-    m = int(match.group(3))
 
+    a, c, m = parse_congruency(args[0])
     cong = congruencies(a, c, m)
     print("# of results:", len(cong))
     for res in cong:
