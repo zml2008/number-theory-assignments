@@ -3,6 +3,7 @@
 __author__ = 'zml'
 from ch6_3 import gxy
 import re
+import argparse
 
 CONGRUENCY_REGEX = re.compile(r'(\d+)?\s*(?:\*\s*)?x\s*=\s*(\d+)\s*(?:mod|%)\s*(\d+)\s*$')
 
@@ -28,7 +29,7 @@ def congruencies(a, c, m):
 def parse_congruency(congr):
     match = CONGRUENCY_REGEX.match(congr)
     if not match:
-        raise "Invalid result %s. Input must be of the form ax=cmodm" % congr
+        raise argparse.ArgumentTypeError("Invalid result %s. Input must be of the form ax=cmodm" % congr)
     if match.group(1):
         a = int(match.group(1))
     else:
@@ -38,13 +39,12 @@ def parse_congruency(congr):
     return (a, c, m)
 
 
-def main(args):
-    if len(args) < 1:
-        print("No argument specified. First arg must be of form ax=cmodm")
-        return 1
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('congruence', type=parse_congruency, help="The congruency to solve")
+    p_args = parser.parse_args()
 
-
-    a, c, m = parse_congruency(args[0])
+    a, c, m = p_args.congruence
     cong = congruencies(a, c, m)
     print("# of results:", len(cong))
     for res in cong:
@@ -55,5 +55,6 @@ def main(args):
 
 if __name__ == "__main__":
     import sys
-    inp = input("Provide congruency of ax=cmodm: ")
-    sys.exit(main([inp]))
+    # inp = input("Provide congruency of ax=cmodm: ")
+    print(sys.argv)
+    sys.exit(main())

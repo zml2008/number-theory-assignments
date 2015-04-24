@@ -6,7 +6,11 @@ import math
 
 
 def is_prime(num):
-    for i in range(2, math.ceil(math.sqrt(num)) + 1):
+    if num % 2 == 0 and num != 2:
+        return False
+    for i in range(1, math.ceil(math.sqrt(num)) + 1, 2):
+        if i == 1:
+            continue
         if num % i == 0 and num != i:
             return False
     return True
@@ -14,9 +18,12 @@ def is_prime(num):
 
 def primes(start=1, primelimit=100):
     finals = 0
+    if start == 1:
+        yield 2
+        finals = 1
     last = start
     while finals < primelimit:
-        last += 1
+        last += 2
         if is_prime(last):
             yield last
             finals += 1
@@ -41,5 +48,8 @@ def prime_factorization(num):
 
 
 if __name__ == "__main__":
-    n = int(input("Prime factorization of integer n="))
-    print("n=%d" % n, list(prime_factorization(n)))
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("number", metavar="n", type=int, help="The number to get the prime factorization of")
+    args = parser.parse_args()
+    print("n=%d" % args.number, list(prime_factorization(args.number)))

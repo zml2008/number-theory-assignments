@@ -39,11 +39,13 @@ def solve(*congrs):
         p_m *= m
 
 
-def main(args):
-    congrs = [parse_congruency(arg) for arg in args]
-    ret = solve(*congrs)
+def main():
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("congruencies", nargs = "+", type=parse_congruency, metavar="a=cmodm", help="Congruencies to solve")
+    args = parser.parse_args()
+    ret = solve(*args.congruencies)
     print("Solution is x=%d" % ret)
 
 if __name__ == "__main__":
-    import sys
-    main(sys.argv[1:])
+    main()
