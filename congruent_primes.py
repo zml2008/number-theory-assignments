@@ -2,9 +2,11 @@
 
 __author__ = 'zml'
 
+import argparse
+
 from factorization import prime_factorization, is_prime
 from congruence import parse_congruency
-import argparse
+
 
 def infinitely_many_primes(congruency):
     """
@@ -14,6 +16,7 @@ def infinitely_many_primes(congruency):
     """
     pass
 
+
 def prime_or_in_list(num, list):
     if is_prime(num):
         return True
@@ -22,7 +25,7 @@ def prime_or_in_list(num, list):
     if num_index == -1:
         raise BaseException("Invalid input! Number must be in the given list")
     for i in prime_factorization(num):
-        try:
+        try: # Throws an exception when not present, so we have to catch that, rather than special value :(
             list.index(i, 0, num_index)
             return True
         except ValueError:
@@ -41,5 +44,3 @@ if __name__ == "__main__":
     primeys = list(filter(lambda n: prime_or_in_list(n, modulars), modulars))
     # print("Modulars (#: %d): %s, primeys (#: %d): %s" % (len(modulars), modulars, len(primeys), primeys))
     print("Eucilid's applies: %s" % (len(modulars) == len(primeys)))
-
-
