@@ -3,6 +3,9 @@
 __author__ = 'zml'
 
 def successive_square(a, k, m):
+    """
+    Solve a successive square problem of the form a^k mod m
+    """
     b = 1
     while k >= 1:
         if k % 2 == 1:
