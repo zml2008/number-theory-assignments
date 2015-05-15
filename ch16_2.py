@@ -12,7 +12,7 @@ def successive_square(a, k, m):
             b = (a*b) % m
         a = (a * a) % m
         k //= 2
-    return b
+    return b % m
 
 if __name__ == "__main__":
     import argparse

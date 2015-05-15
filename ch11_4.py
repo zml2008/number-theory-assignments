@@ -1,12 +1,25 @@
 __author__ = 'zml'
 
 import factorization
+import functools
+import itertools
 
-def euler_phi(num):
+def euler_phi(num, factors=None):
     vals = {}
-    for i in factorization.prime_factorization(num):
+
+    if factors is None:
+        factors = factorization.prime_factorization(num)
+    else:
+        if functools.reduce(lambda a, b: a * b, factors, 1) != num:
+            raise BaseException("Factors do not equal input number!")
+            pass
+        #if not functools.reduce(lambda a, b: a and b, [factorization.is_prime(n) for n in factors], True):
+        #    print("Doing factorization?")
+        #    factors = itertools.chain([factorization.prime_factorization(n) for n in factors])
+
+
+    for i in factors:
         vals[i] = vals.get(i, 0) + 1
-    print(vals)
 
     # phi(mn) = phi(m)*phi(n)
     # phi(p) = p - 1
