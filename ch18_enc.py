@@ -1,7 +1,8 @@
 __author__ = 'zml'
-
 from ch17_6 import solve
+from ch16_2 import successive_square
 from collections import namedtuple
+import math
 import random
 
 PrivateKey = namedtuple("PrivateKey", ["p", "q"])
@@ -27,24 +28,50 @@ class KeyPair(object):
     def from_file(cls, path):
         pass
 
+    @property
+    def private(self):
+        return self.__private
+
+    @property
+    def public(self):
+        return self.__public
+
     def decrypt(self, inp):
         if self.__private is None:
-            raise KeyException("No private key, cannot decrypt!")
+            raise KeyException("No private key, cannot encrypt!")
         return [solve(self.__public.k, i, self.__public.m, factors=[self.__private.p, self.__private.q]) for i in inp]
 
     def encrypt(self, inp):
-        return [i ** self.__public.k % self.__public.m for i in inp]
+        print(self.__public.k)
+        print(self.__public.m)
+
+        return [successive_square(i, self.__public.k, self.__public.m) for i in inp]
 
 
 class StringCodec(object):
-    # TODO actually implement
-    pass
+    def encode(self, key, inp):
+        return inp.encode()
+
+    def decode(self, key, inp):
+        return inp.decode()
 
 class TextbookCodec(object):
-    def encode(self, inp):
-        return [i - 54 for i in inp.upper().encode()]
+    def encode(self, key, inp):
+        inp = [i - 54 for i in inp.upper().encode()]
+        if key.private:
+            chunked = [0]
+            pairs = math.ceil(math.log10(key.public.m)) // 2
+            count = 0
+            for i in inp:
+                if count == pairs:
+                    chunked.append(0)
+                    count = 0
+                count += 1
+                chunked[-1] = chunked[-1] * 100 + i
+            return chunked
+        return inp
 
-    def decode(self, inp):
+    def decode(self, key, inp):
         print(inp)
         single, split = [], []
         for i in inp:
@@ -55,7 +82,7 @@ class TextbookCodec(object):
                 raise BaseException("Non-pair-digited number!")
             single.append(i % 100)
             split.extend(single[::-1])
-            single.clear()
+            single = []#.clear()
 
         print(split)
         return bytes([i + 54 for i in split]).decode()
@@ -64,26 +91,38 @@ class TextbookCodec(object):
 def annotate_keys(args, func):
     pass
 
-def decrypt_textbook_cb(keypair, args):
+def decrypt_textbook_cb(args):
+    keypair = KeyPair(PublicKey(m=args.p*args.q, k=args.k), PrivateKey(p=args.p, q=args.q))
     codec = TextbookCodec()
-    print("Decoded: %s", codec.decode(keypair.decrypt(args.input)))
+    print("Decoded: %s" % codec.decode(keypair, keypair.decrypt(args.numbers)))
+
+def encrypt_textbook_cb(args):
+    keypair = KeyPair(PublicKey(m=args.p*args.q, k=args.k), PrivateKey(p=args.p, q=args.q))
+    codec = TextbookCodec()
+    print(codec.encode(keypair, "".join(args.message)))
+    print("Encoded: %s" % keypair.encrypt(codec.encode(keypair, "".join(args.message))))
 
 def ch18_1_test():
     pair = KeyPair(PublicKey(m=73*97, k=1789), PrivateKey(p=73, q=97))
     decoder = TextbookCodec()
-    encoded = pair.encrypt(decoder.encode('FERMATI'))
+    encoded = pair.encrypt(decoder.encode(pair, 'FERMATI'))
     print(encoded)
-    print(decoder.decode(pair.decrypt(encoded)))
+    print(decoder.decode(pair, pair.decrypt(encoded)))
     #print(decoder.decode(pair.decrypt([5192, 2604, 4222])))
 
     pair = KeyPair(PublicKey(m=123456789012345681631*7746289204980135457, k=12398737), PrivateKey(p=123456789012345681631, q=7746289204980135457))
-    print(decoder.decode(pair.decrypt([821566670681253393182493050080875560504,
-                                       87074173129046399720949786958511391052,
-                                       552100909946781566365272088688468880029,
-                                       491078995197839451033115784866534122828,172219665767314444215921020847762293421])))
+    print("Created pair")
+    encoded = decoder.encode(pair, "THEDIFFERENTBRANCHESOFARITHMETICREPLIEDTHEMOCKTURTLEAMBITIONDISTRACTIONUGLIFICATIONANDDERISIONX")
+    print(encoded)
+    print(pair.encrypt(encoded))
+    #print(decoder.decode(pair.decrypt([821566670681253393182493050080875560504,
+    #                                   87074173129046399720949786958511391052,
+    #                                   552100909946781566365272088688468880029,
+    #                                   491078995197839451033115784866534122828,172219665767314444215921020847762293421])))
 
 if __name__ == "__main__":
-    ch18_1_test()
+    #ch18_1_test()
+    #exit()
     import argparse
     parser = argparse.ArgumentParser(description="utility to parse files")
 
@@ -92,11 +131,26 @@ if __name__ == "__main__":
         subcommand.add_argument("--privkey")
 
     subs = parser.add_subparsers()
-    gen_keys = subs.add_parser(name="gen-keys")
+    #gen_keys = subs.add_parser(name="gen-keys")
     #add_key_args(gen_keys)
 
-    decrypt_textbook = subs.add_parser(name="decrypt-textbook", description="Decrypt using textbook algorithm")
+    decrypt_textbook = subs.add_parser("decrypttextbook", description="Decrypt using textbook algorithm")
+    decrypt_textbook.add_argument("k", type=int)
+    decrypt_textbook.add_argument("p", type=int)
+    decrypt_textbook.add_argument("q", type=int)
+    decrypt_textbook.add_argument("numbers", nargs="+", type=int)
     decrypt_textbook.set_defaults(func=decrypt_textbook_cb)
+
+    encrypt_textbook = subs.add_parser("encrypttextbook", description="Encrypt using textbook algorithm")
+    encrypt_textbook.add_argument("k", type=int)
+    encrypt_textbook.add_argument("p", type=int)
+    encrypt_textbook.add_argument("q", type=int)
+    encrypt_textbook.add_argument("message", nargs="+")
+    encrypt_textbook.set_defaults(func=encrypt_textbook_cb)
+
+    args = parser.parse_args()
+    args.func(args)
+
 # key: m=p*q, k,
 # break up message into dicits less than m
 #  use seggessive squaring to compute a_n^k modm these large numbers form b1, b2, br
