@@ -32,7 +32,7 @@ def __gxy_all(start_a, start_b, incr):
     g, x, y = gxy(start_a, start_b)
     k = 0
     while True:
-        yield g, x + k * (start_b / g), y + k * (start_a / g)
+        yield g, x + k * start_b, y + k * start_a
         k += incr
 
 if __name__ == "__main__":
