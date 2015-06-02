@@ -74,20 +74,21 @@ class StringCodec(object):
         return inp.decode()
 
 class TextbookCodec(object):
+    ALPHHA_PREFIX = 54
     def encode(self, key, inp):
-        inp = [i - 54 for i in inp.upper().encode()]
-        if key.private:
-            chunked = [0]
-            pairs = math.ceil(math.log10(key.public.m)) // 2
-            count = 0
-            for i in inp:
-                if count == pairs:
-                    chunked.append(0)
-                    count = 0
-                count += 1
-                chunked[-1] = chunked[-1] * 100 + i
-            return chunked
-        return inp
+        inp = [i - self.ALPHHA_PREFIX for i in inp.upper().encode()]
+        #if key.private:
+        chunked = [0]
+        pairs = math.ceil(math.log10(key.public.m)) // 2
+        count = 0
+        for i in inp:
+            if count == pairs:
+                chunked.append(0)
+                count = 0
+            count += 1
+            chunked[-1] = chunked[-1] * 100 + i
+        return chunked
+        #return inp
 
     def decode(self, key, inp):
         print(inp)
@@ -96,14 +97,14 @@ class TextbookCodec(object):
             while i > 100:
                 single.append(i % 100)
                 i //= 100
-            if i < 10:
-                raise BaseException("Non-pair-digited number!")
+            #if i < 10:
+                #raise BaseException("Non-pair-digited number!")
             single.append(i % 100)
             split.extend(single[::-1])
             single = []#.clear()
 
         print(split)
-        return bytes([i + 54 for i in split]).decode()
+        return bytes([i + self.ALPHHA_PREFIX for i in split]).decode()
 
 
 def annotate_keys(args, func):
