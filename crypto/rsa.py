@@ -15,3 +15,12 @@ def enrsa(text, e, n):
 def dersa(nums, e, n):
     return __codec.decode(None, [solve(e, i, n) for i in nums])
     pass
+
+def sign(text, e_from, n_from, e_to, n_to):
+    pair_encode = KeyPair(PublicKey(m=min(n_from, n_to), k=-1), None)
+    nums = __codec.encode(pair_encode, text)
+    return [successive_square(solve(e_from, i, n_from), e_to, n_to) for i in nums]
+
+def unsign(nums, e_from, n_from, e_to, n_to):
+    dec = [successive_square(solve(e_to, i, n_to), e_from, n_from) for i in nums]
+    return __codec.decode(None, dec)

@@ -7,8 +7,9 @@ from ch6_3 import gxy_ascending
 from ch16_2 import successive_square
 
 def solve(k, b, m, factors=None):
-    if gcd(b, m) != 1:
-        raise BaseException("B and m not relatively prime")
+    #print("solve(k=%d,b=%d,m=%d" % (k, b, m))
+    #if gcd(b, m) != 1:
+    #    raise BaseException("B and m not relatively prime")
     phi = euler_phi(m, factors)
 
     if gcd(phi, k) != 1:

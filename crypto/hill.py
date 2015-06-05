@@ -77,3 +77,13 @@ def dehill(string, key):
 
     print(ret)
     return bytes([int( i % 26) + ALPHA_PREFIX for i in ret]).decode()
+
+def fixed_chars(key):
+    ret = []
+    for i in range(ALPHA_PREFIX, ALPHA_PREFIX + 26):
+        for j in range(ALPHA_PREFIX, ALPHA_PREFIX + 26):
+            test_str = "%c%c" % (i, j)
+            if enhill(test_str, key) == test_str:
+                ret.append(test_str)
+                #print(test_str, " is left fixed!")
+    return ret

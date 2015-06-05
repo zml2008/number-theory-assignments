@@ -5,7 +5,7 @@ from ch6_3 import gxy
 import re
 import argparse
 
-CONGRUENCY_REGEX = re.compile(r'(\d+)?\s*(?:\*\s*)?x\s*=\s*(\d+)\s*(?:mod|%)\s*(\d+)\s*$')
+CONGRUENCY_REGEX = re.compile(r'([\d\-]+)?\s*(?:\*\s*)?x\s*=\s*([\d\-]+)\s*(?:mod|%)\s*([\d\-]+)\s*$')
 
 
 def gxy_neg(a, b):
